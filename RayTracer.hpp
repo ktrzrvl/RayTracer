@@ -28,10 +28,15 @@ RayTracer::RayTracer(int width, int height) {
 	this->width = width;
 	this->height = height;
 
-	spheres.push_back(Sphere(Vector(0, -1, 3), 1, Vector(1, 0, 0), 50, 0.2));
-	spheres.push_back(Sphere(Vector(2, 0, 4), 1, Vector(0, 0, 1), 500, 0.3));
-	spheres.push_back(Sphere(Vector(-2, 0, 4), 1, Vector(0, 1, 0), 10, 0.4));
-	spheres.push_back(Sphere(Vector(0, -5001, 0), 5000, Vector(1, 1, 0), 1000, 0.5));
+	Material m1 = { Vector(1, 0, 0), 50, 0.2 };
+	Material m2 = { Vector(0, 0, 1), 500, 0.3 };
+	Material m3 = { Vector(0, 1, 0), 10, 0.4 };
+	Material m4 = { Vector(1, 1, 0), 1000, 0.5 };
+
+	spheres.push_back(Sphere(Vector(0, -1, 3), 1, m1));
+	spheres.push_back(Sphere(Vector(2, 0, 4), 1, m2));
+	spheres.push_back(Sphere(Vector(-2, 0, 4), 1, m3));
+	spheres.push_back(Sphere(Vector(0, -5001, 0), 5000, m4));
 
 	lights.push_back(Light(0.2));
 	lights.push_back(Light(POINT, 0.6, Vector(2, 1, 0)));
@@ -86,17 +91,22 @@ Vector RayTracer::TraceRay(const Vector& O, const Vector& D, double tmin, double
 	if (closest_index == -1) {
 		return Vector(0,0,0);
 	}
+
 	Vector P = O + D * closest_t;
 	Vector N = spheres[closest_index].GetNormal(P);
-	double specular = spheres[closest_index].GetSpecular();
-	double intense = ComputeLightning(P, N, D, specular);
-	Vector color = spheres[closest_index].GetColor() * intense;
-	if (specular == 0 || depth <= 0) {
+	Material material = spheres[closest_index].GetMaterial();
+
+	double intense = ComputeLightning(P, N, D, material.specular);
+	Vector color = material.color * intense;
+
+	if (material.specular == 0 || depth <= 0) {
 		return color;
 	}
+
 	Vector vec = RefractRay((D * (-1)), N);
 	Vector reflected_color = TraceRay(P, vec, 0.001, INF, DEPTH - 1);
-	color = color * (1 - spheres[closest_index].GetReflective()) + reflected_color * spheres[closest_index].GetReflective();
+	color = color * (1 - material.reflective) + reflected_color * material.reflective;
+
 	return color;
 }
 

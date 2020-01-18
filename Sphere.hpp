@@ -2,31 +2,26 @@
 #include <iostream>
 #include <cmath>
 #include "Vector.hpp"
+#include "Material.hpp"
 
 using namespace std;
 
 class Sphere {
 	Vector C;
 	double R;
-	Vector color;
-	double specular;
-	double reflective;
+	Material material;
 
 public:
-	Sphere(const Vector& c, double rad, const Vector& color, double specular, double reflective);
+	Sphere(const Vector& c, double rad, Material material);
 	bool IsIntersect(const Vector &O, const Vector &D, double &t) const;
-	Vector GetColor() const;
 	Vector GetNormal(const Vector& P);
-	double GetSpecular();
-	double GetReflective();
+	Material GetMaterial() const;
 };
 
-Sphere::Sphere(const Vector& c, double rad, const Vector& color, double specular, double reflective) {
+Sphere::Sphere(const Vector& c, double rad, Material material) {
 	C = c;
 	R = rad;
-	this->color = color;
-	this->specular = specular;
-	this->reflective = reflective;
+	this->material = material;
 }
 
 bool Sphere::IsIntersect(const Vector &O, const Vector &D, double &t) const {
@@ -45,18 +40,10 @@ bool Sphere::IsIntersect(const Vector &O, const Vector &D, double &t) const {
 	return t >= 0;
 }
 
-Vector Sphere::GetColor() const {
-	return color;
+Material Sphere::GetMaterial() const {
+	return material;
 }
 
 Vector Sphere::GetNormal(const Vector& P) {
 	return Vector((P.GetX() - C.GetX()) / R, (P.GetY() - C.GetY()) / R, (P.GetZ() - C.GetZ()) / R);
-}
-
-double Sphere::GetSpecular() {
-	return specular;
-}
-
-double Sphere::GetReflective() {
-	return reflective;
 }
