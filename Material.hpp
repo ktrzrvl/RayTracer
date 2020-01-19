@@ -1,9 +1,11 @@
 #pragma once
 #include <iostream>
+#include <vector>
 #include "Vector.hpp"
 
 struct Material {
 	Vector color;
 	double specular;
-	double reflective;
+	double refractive;
+	vector<double> albedo;
 };

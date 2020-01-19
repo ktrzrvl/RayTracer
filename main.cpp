@@ -8,6 +8,6 @@
 using namespace std;
 
 int main() {
-	RayTracer tracer(1000, 1000);
+	RayTracer tracer(2000, 2000);
 	tracer.Trace();
 }
