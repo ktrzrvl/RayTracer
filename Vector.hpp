@@ -18,6 +18,8 @@ public:
 	double GetX() const;
 	double GetY() const;
 	double GetZ() const;
+
+	friend istream& operator>>(istream &is, Vector& v);
 };
 
 Vector::Vector(double x1, double y1, double z1) {
@@ -72,4 +74,9 @@ double Vector::GetY() const {
 
 double Vector::GetZ() const {
 	return z;
+}
+
+istream& operator>>(istream &is, Vector& v) {
+	is >> v.x >> v.y >> v.z;
+	return is;
 }

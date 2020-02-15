@@ -8,6 +8,6 @@
 using namespace std;
 
 int main() {
-	RayTracer tracer(2000, 2000);
+	RayTracer tracer("scene.txt");
 	tracer.Trace();
 }

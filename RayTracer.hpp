@@ -1,4 +1,6 @@
 #include <iostream>
+#include <string>
+#include <sstream>
 #include "Sphere.hpp"
 #include "Vector.hpp"
 #include "Bitmap.hpp"
@@ -22,8 +24,45 @@ class RayTracer {
 	bool RefractRay(const Vector &I, const Vector &N, double eta1, double eta2, Vector &D);
 public:
 	RayTracer(int width, int height);
+	RayTracer(const string &path);
 	void Trace();
 };
+
+RayTracer::RayTracer(const string &path) {
+	ifstream f(path); // открываем файл на чтение
+
+	if (!f) { // если файл не открылся
+		throw string("Unable to open file '") + path + "'"; // бросаем исключение
+	}
+
+	string line;
+	while (getline(f, line)) {
+		if (line[0] == '#' || line.size() == 0)
+			continue;
+
+		stringstream ss(line);
+		string type;
+		ss >> type;
+		if (type == "width") {
+			ss >> width;
+		}
+		else if (type == "height") {
+			ss >> height;
+		}
+		else if (type == "light") {
+			string lights1;
+			getline(ss, lights1);
+			lights.push_back(Light(lights1));
+		}
+		else if (type == "sphere") {
+			string spheres1;
+			getline(ss, spheres1);
+			spheres.push_back(Sphere(spheres1));
+		}
+	}
+
+	f.close(); // закрываем файл
+}
 
 RayTracer::RayTracer(int width, int height) {
 	this->width = width;

@@ -1,5 +1,7 @@
 #pragma once
 #include <iostream>
+#include <string>
+#include <sstream>
 #include <cmath>
 #include "Vector.hpp"
 #include "Material.hpp"
@@ -12,11 +14,16 @@ class Sphere {
 	Material material;
 
 public:
+	Sphere(const string &s);
 	Sphere(const Vector& c, double rad, Material material);
 	bool IsIntersect(const Vector &O, const Vector &D, double &t) const;
 	Vector GetNormal(const Vector& P);
 	Material GetMaterial() const;
 };
+Sphere::Sphere(const string &s) {
+	stringstream ss(s);;
+	ss >> C >> R >> material;
+}
 
 Sphere::Sphere(const Vector& c, double rad, Material material) {
 	C = c;
